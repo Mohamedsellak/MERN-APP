@@ -1,45 +1,17 @@
-require('dotenv').config();
-
-const express = require('express');
-const app = express();
-
-const port = process.env.PORT || 4000;
-
-app.use(express.json())
-
+require('dotenv').config()
 const cors = require('cors')
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 5000
 
-app.use(cors({
-    origin: "http://localhost:3000"
-}))
-
-const mongoose = require('mongoose');
-mongoose.connect("mongodb+srv://Mohamedsellak:Mohamedsellak@cluster.ku4rqnz.mongodb.net/mydb?retryWrites=true&w=majority")
-const Usermodel = require('./model/Users')
-
-
-app.get('/', (req, res) => {
-    res.send("hello")
-})
-
-app.get('/getUsers', (req, res) => {
-    Usermodel.find({}, (error, result) => {
-        if (error) {
-            res.json(error)
-        } else {
-            res.json(result)
-        }
-    })
-})
-
-app.post('/createUsers', async (req, res) => {
-    const user = new UserModal(req.body)
-    await user.save()
-    res.json(user)
-})
+app.use(express.urlencoded({extended:false}));
+app.use(express.json())
+app.use(cors())
 
 
-app.listen(port, () => console.log(`server is running on port ${port}`));
+app.use('/users',require('./routes/userRoot'))
 
-//https://stackabuse.com/building-a-rest-api-with-node-and-express/
-// https://www.freecodecamp.org/news/build-a-restful-api-using-node-express-and-mongodb/
+
+app.listen(port,()=> console.log('server is running'))
+
+// https://dev.to/nyctonio/authentication-in-node-js-with-mongodb-bcrypt-and-jwt-web-tokens-with-cookies-hl3
